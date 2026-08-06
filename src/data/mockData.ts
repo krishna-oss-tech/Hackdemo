@@ -362,64 +362,192 @@ export const aiExplainability = {
   resolution: '10m/pixel',
 };
 
-// ---- Heatmap Layers ----
-export const heatmapLayers = {
-  flood: {
-    color: '#3b82f6',
-    label: 'Flood',
-    polygons: [
-      [
-        [21.16, 79.06],
-        [21.17, 79.12],
-        [21.14, 79.13],
-        [21.12, 79.10],
-        [21.13, 79.06],
-      ],
-      [
-        [21.22, 79.18],
-        [21.24, 79.22],
-        [21.21, 79.23],
-        [21.19, 79.20],
-      ],
-    ],
+// ---- Satellite Layer Definitions ----
+export interface SatelliteLayerOption {
+  id: 'sentinel2' | 'sentinel1' | 'landsat' | 'clarity' | 'terrain' | 'hybrid';
+  name: string;
+  badge: string;
+  source: string;
+  resolution: string;
+  url: string;
+  attribution: string;
+  description: string;
+}
+
+export const satelliteLayers: SatelliteLayerOption[] = [
+  {
+    id: 'sentinel2',
+    name: 'Sentinel-2 (Optical)',
+    badge: '10m Resolution',
+    source: 'Copernicus Sentinel-2 / GEE',
+    resolution: '10m/pixel (RGB + NIR)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Copernicus / Esri World Imagery',
+    description: 'True-color MSI optical surface reflectance. Ideal for crop health & surface water detection.'
   },
-  fire: {
-    color: '#ef4444',
-    label: 'Burn Scar',
-    polygons: [
-      [
-        [19.97, 79.28],
-        [19.98, 79.32],
-        [19.95, 79.31],
-        [19.96, 79.27],
-      ],
-    ],
+  {
+    id: 'sentinel1',
+    name: 'Sentinel-1 SAR (Radar)',
+    badge: 'Cloud-Penetrating',
+    source: 'Copernicus Sentinel-1 C-Band SAR',
+    resolution: '20m/pixel (VV + VH Backscatter)',
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; Copernicus Sentinel-1 SAR / CartoDB',
+    description: 'C-band Synthetic Aperture Radar. Penetrates 100% cloud cover & storm rain for flood mapping.'
   },
-  cropStress: {
-    color: '#eab308',
-    label: 'Crop Stress',
-    polygons: [
-      [
-        [20.73, 78.58],
-        [20.76, 78.64],
-        [20.74, 78.66],
-        [20.71, 78.62],
-      ],
-    ],
+  {
+    id: 'landsat',
+    name: 'Landsat 8/9 (Multispectral)',
+    badge: '30m Thermal',
+    source: 'USGS / NASA Landsat-9 OLI-2',
+    resolution: '30m/pixel (Multispectral + Thermal)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; USGS Landsat / Esri',
+    description: '30m multispectral + 100m thermal TIRS bands for evapotranspiration & deep burn scars.'
   },
-  healthy: {
-    color: '#22c55e',
-    label: 'Healthy Vegetation',
-    polygons: [
-      [
-        [20.92, 77.74],
-        [20.96, 77.82],
-        [20.94, 77.84],
-        [20.90, 77.80],
-      ],
-    ],
+  {
+    id: 'clarity',
+    name: 'Esri World Imagery Clarity',
+    badge: 'High Detail',
+    source: 'ArcGIS World Imagery Clarity Archive',
+    resolution: '0.5m - 5m/pixel',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, Maxar, GeoEye',
+    description: 'Ultra high-resolution archive imagery focused on spatial clarity and zero cloud cover.'
   },
-};
+  {
+    id: 'terrain',
+    name: 'Terrain Topography (DEM)',
+    badge: 'Contour Relief',
+    source: 'SRTM 30m DEM / OpenTopoMap',
+    resolution: '30m Elevation Grid',
+    url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; OpenTopoMap / SRTM',
+    description: 'Topographic contour relief map highlighting elevation slopes and basin drainage.'
+  },
+  {
+    id: 'hybrid',
+    name: 'Hybrid (Satellite + Vectors)',
+    badge: 'Labels & Boundaries',
+    source: 'CartoDB / OpenStreetMap',
+    resolution: 'Vector Overlay',
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; OpenStreetMap contributors / CartoDB',
+    description: 'Combined high-res satellite backdrop with vector road networks and administrative labels.'
+  }
+];
+
+// ---- City AOI Targets ----
+export interface CityTarget {
+  id: string;
+  name: string;
+  state: string;
+  coords: [number, number];
+  zoom: number;
+  floodRisk: 'Critical' | 'High' | 'Medium' | 'Low';
+  cloudCover: number;
+  activeDisaster: string;
+  polygons: {
+    flood?: [number, number][][];
+    fire?: [number, number][][];
+    cropStress?: [number, number][][];
+    healthy?: [number, number][][];
+  };
+}
+
+export const cityTargets: CityTarget[] = [
+  {
+    id: 'nagpur',
+    name: 'Nagpur',
+    state: 'Maharashtra',
+    coords: [21.1458, 79.0882],
+    zoom: 11,
+    floodRisk: 'High',
+    cloudCover: 18,
+    activeDisaster: 'Nag River Monsoon Overflow (4.8 km² inundated)',
+    polygons: {
+      flood: [
+        [[21.16, 79.06], [21.17, 79.12], [21.14, 79.13], [21.12, 79.10], [21.13, 79.06]],
+        [[21.18, 79.14], [21.20, 79.18], [21.17, 79.19], [21.15, 79.15]]
+      ],
+      cropStress: [
+        [[21.08, 79.02], [21.11, 79.05], [21.09, 79.07], [21.06, 79.04]]
+      ],
+      healthy: [
+        [[21.22, 79.00], [21.25, 79.06], [21.23, 79.08], [21.20, 79.02]]
+      ]
+    }
+  },
+  {
+    id: 'kamptee',
+    name: 'Kamptee',
+    state: 'Maharashtra',
+    coords: [21.2167, 79.2000],
+    zoom: 12,
+    floodRisk: 'Critical',
+    cloudCover: 78, // High cloud cover forces SAR auto-switch!
+    activeDisaster: 'Flash Inundation (2.1 km² submerged • 78% Cloud Cover)',
+    polygons: {
+      flood: [
+        [[21.22, 79.18], [21.24, 79.22], [21.21, 79.23], [21.19, 79.20]]
+      ],
+      cropStress: [
+        [[21.25, 79.15], [21.27, 79.19], [21.24, 79.20], [21.22, 79.16]]
+      ]
+    }
+  },
+  {
+    id: 'wardha',
+    name: 'Wardha',
+    state: 'Maharashtra',
+    coords: [20.7453, 78.6022],
+    zoom: 11,
+    floodRisk: 'Medium',
+    cloudCover: 12,
+    activeDisaster: 'Cotton Field Waterlogging & Stress (12 Hectares)',
+    polygons: {
+      cropStress: [
+        [[20.73, 78.58], [20.76, 78.64], [20.74, 78.66], [20.71, 78.62]]
+      ],
+      healthy: [
+        [[20.78, 78.52], [20.81, 78.57], [20.79, 78.59], [20.76, 78.54]]
+      ]
+    }
+  },
+  {
+    id: 'chandrapur',
+    name: 'Chandrapur',
+    state: 'Maharashtra',
+    coords: [19.9615, 79.2961],
+    zoom: 11,
+    floodRisk: 'Low',
+    cloudCover: 8,
+    activeDisaster: 'Forest Burn Scar (0.6 km² Deciduous Belt)',
+    polygons: {
+      fire: [
+        [[19.97, 79.28], [19.98, 79.32], [19.95, 79.31], [19.96, 79.27]]
+      ],
+      healthy: [
+        [[19.90, 79.20], [19.94, 79.26], [19.92, 79.28], [19.88, 79.22]]
+      ]
+    }
+  },
+  {
+    id: 'mumbai',
+    name: 'Mumbai Coast',
+    state: 'Maharashtra',
+    coords: [19.0760, 72.8777],
+    zoom: 11,
+    floodRisk: 'High',
+    cloudCover: 42,
+    activeDisaster: 'High Tide Storm Surge Monitoring',
+    polygons: {
+      flood: [
+        [[19.02, 72.82], [19.06, 72.85], [19.04, 72.87], [19.00, 72.84]]
+      ]
+    }
+  }
+];
 
 // ---- Navigation Items ----
 export const navItems = [
