@@ -2,12 +2,13 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard, ScanSearch, AlertTriangle, Leaf,
-  Clock, FileText, Settings, Globe, ChevronLeft, ChevronRight
+  Clock, FileText, Settings, Globe, ChevronLeft, ChevronRight, Cpu
 } from 'lucide-react';
 import { useState } from 'react';
 
 const iconMap: Record<string, React.ReactNode> = {
   LayoutDashboard: <LayoutDashboard className="w-5 h-5" />,
+  Cpu: <Cpu className="w-5 h-5 text-emerald-400" />,
   ScanSearch: <ScanSearch className="w-5 h-5" />,
   AlertTriangle: <AlertTriangle className="w-5 h-5" />,
   Leaf: <Leaf className="w-5 h-5" />,
@@ -18,6 +19,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard', path: '/dashboard' },
+  { id: 'digital-twin', label: 'AI Digital Twin', icon: 'Cpu', path: '/dashboard/digital-twin', isUsp: true },
   { id: 'analyze', label: 'Analyze Region', icon: 'ScanSearch', path: '/dashboard/analyze' },
   { id: 'alerts', label: 'Disaster Alerts', icon: 'AlertTriangle', path: '/dashboard/alerts' },
   { id: 'crop', label: 'Crop Health', icon: 'Leaf', path: '/dashboard/crop-health' },
@@ -73,8 +75,13 @@ export default function Sidebar() {
             >
               <span className="shrink-0">{iconMap[item.icon]}</span>
               {!collapsed && (
-                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  {item.label}
+                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-between w-full">
+                  <span>{item.label}</span>
+                  {item.isUsp && (
+                    <span className="ml-auto px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 tracking-wider">
+                      USP
+                    </span>
+                  )}
                 </motion.span>
               )}
               {!collapsed && item.id === 'alerts' && (

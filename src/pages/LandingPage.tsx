@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { features, howItWorksSteps, landingStats } from '../data/mockData';
 import { useTheme } from '../context/ThemeContext';
 import {
-  Satellite, Shield, Zap, ArrowRight, ChevronDown,
+  Shield, Zap, ArrowRight, ChevronDown,
   Sun, Moon, Menu, X, Globe, BarChart3, Users, Award,
-  Check, Star, Play
+  Check, Star, Cpu
 } from 'lucide-react';
 
 const container = {
@@ -205,38 +205,37 @@ function HeroSection() {
             transition={{ delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
             style={{
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.2)'
+              background: 'rgba(16, 185, 129, 0.12)',
+              border: '1px solid rgba(16, 185, 129, 0.3)'
             }}
           >
-            <Satellite className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-            <span className="text-sm font-medium" style={{ color: 'var(--color-primary)' }}>
-              AI-Powered Satellite Intelligence
+            <Cpu className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
+            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+              CORE USP • AI DISASTER DIGITAL TWIN PLATFORM
             </span>
           </motion.div>
 
           {/* Heading */}
           <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6" style={{ fontFamily: 'Outfit' }}>
-            <span style={{ color: 'var(--text-primary)' }}>Transforming Satellite</span>
+            <span style={{ color: 'var(--text-primary)' }}>Real-Time AI</span>
             <br />
-            <span className="text-gradient-primary">Data into Intelligence</span>
+            <span className="text-gradient-primary">Disaster Digital Twin</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed"
             style={{ color: 'var(--text-secondary)' }}>
-            Detect crop stress and natural disasters in real-time. Get AI-powered recommendations
-            to protect agriculture and save lives.
+            Simulate flood vectors, model wildfire physics, and test what-if emergency evacuations in real-time. Continuous 3D spatial replicas synchronized with Sentinel-2 satellite streams.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <button onClick={() => navigate('/dashboard')}
-              className="btn-primary text-base py-3.5 px-8">
-              <Play className="w-5 h-5" /> Analyze Region
+            <button onClick={() => navigate('/dashboard/digital-twin')}
+              className="btn-primary text-base py-3.5 px-8 font-bold flex items-center gap-2">
+              <Cpu className="w-5 h-5 text-emerald-400 animate-pulse" /> Launch AI Digital Twin
             </button>
-            <button className="btn-outline text-base py-3.5 px-8">
-              Watch Demo <ArrowRight className="w-5 h-5" />
+            <button onClick={() => navigate('/dashboard')} className="btn-outline text-base py-3.5 px-8">
+              Explore Live Dashboard <ArrowRight className="w-5 h-5" />
             </button>
           </div>
 
@@ -269,6 +268,127 @@ function HeroSection() {
         >
           <ChevronDown className="w-6 h-6" style={{ color: 'var(--text-tertiary)' }} />
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function UspDigitalTwinSection() {
+  const navigate = useNavigate();
+
+  const twinHighlights = [
+    {
+      icon: '🌊',
+      title: '3D Flood Surge Simulation',
+      desc: 'Simulate water elevation profiles across terrain DEM maps when rainfall exceeds 100mm/hr or dam spillways breach.'
+    },
+    {
+      icon: '🔥',
+      title: 'Wildfire Vector Physics',
+      desc: 'Predict heat radiation vectors and wind speed burn paths in forest boundaries up to 48 hours in advance.'
+    },
+    {
+      icon: '🛡️',
+      title: 'What-If Mitigation Testing',
+      desc: 'Test temporary sandbag barriers, reservoir diversions, and zone-based evacuations with instant AI impact recalculation.'
+    },
+    {
+      icon: '🛰️',
+      title: 'Sub-300ms Live Telemetry Sync',
+      desc: 'Directly synchronized with Sentinel-2 SAR radar imagery, IoT water level sensors, and weather forecasts.'
+    }
+  ];
+
+  return (
+    <section className="py-20 relative overflow-hidden border-y" style={{ borderColor: 'rgba(16, 185, 129, 0.2)', background: 'radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 80%)' }}>
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+              style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+              <Cpu className="w-3.5 h-3.5" style={{ color: 'var(--color-primary)' }} />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">UNMATCHED CORE USP</span>
+            </div>
+
+            <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight" style={{ fontFamily: 'Outfit', color: 'var(--text-primary)' }}>
+              Simulate Catastrophes <br />
+              <span className="text-gradient-primary">Before They Unfold</span>
+            </h2>
+
+            <p className="text-base md:text-lg mb-8 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              Traditional satellite monitoring only reports after damage occurs. TerraAid's <strong>AI Disaster Digital Twin</strong> creates a dynamic 3D virtual environment to stress-test weather scenarios and test lifesaving interventions in real-time.
+            </p>
+
+            <div className="grid sm:grid-cols-2 gap-4 mb-8">
+              {twinHighlights.map((h, i) => (
+                <div key={i} className="glass-card p-4">
+                  <div className="text-2xl mb-2">{h.icon}</div>
+                  <h4 className="text-sm font-bold mb-1" style={{ color: 'var(--text-primary)' }}>{h.title}</h4>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{h.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <button onClick={() => navigate('/dashboard/digital-twin')} className="btn-primary py-3.5 px-7 font-bold flex items-center gap-2">
+              <Cpu className="w-5 h-5 text-emerald-400 animate-pulse" /> Launch Digital Twin Simulator
+            </button>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="glass-card p-6 relative overflow-hidden border border-emerald-500/30"
+          >
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
+                <span className="text-xs font-bold text-emerald-400">LIVE TWIN PHYSICS STREAM</span>
+              </div>
+              <span className="text-[10px] text-gray-400">DEM 30m • Nagpur Hydrology Mesh</span>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+                <div className="flex justify-between text-xs font-bold mb-2">
+                  <span className="text-gray-300">Simulated Rainfall Surge</span>
+                  <span className="text-blue-400">140 mm/hr</span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="bg-blue-500 h-full w-[70%]" />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+                <div className="flex justify-between text-xs font-bold mb-2">
+                  <span className="text-gray-300">Dam Spillway Overflow Vector</span>
+                  <span className="text-rose-400">CRITICAL +2.4m</span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="bg-rose-500 h-full w-[85%]" />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-800/60">
+                <div className="flex justify-between text-xs font-bold mb-1 text-emerald-300">
+                  <span>Active What-If Mitigation</span>
+                  <span>50% Surge Drop</span>
+                </div>
+                <p className="text-[11px] text-emerald-400/80">
+                  Kamptee Reservoir Diversion active — 4,200 civilian lives & ₹16.3 Cr crop area protected.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
       </div>
     </section>
   );
@@ -573,6 +693,7 @@ export default function LandingPage() {
     <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <Navbar />
       <HeroSection />
+      <UspDigitalTwinSection />
       <FeaturesSection />
       <HowItWorksSection />
       <WhyTerraAidSection />

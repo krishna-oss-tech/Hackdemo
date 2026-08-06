@@ -13,15 +13,18 @@ import TimelineSlider from '../components/timeline/TimelineSlider';
 import AlertCard from '../components/alerts/AlertCard';
 import StatsCharts from '../components/stats/StatsCharts';
 import ReportGenerator from '../components/reports/ReportGenerator';
+import DisasterDigitalTwin from '../components/digitaltwin/DisasterDigitalTwin';
 import { detections, alerts } from '../data/mockData';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertTriangle, Leaf,
   MapPin, Satellite, Clock, FileText, Settings,
-  Shield, Droplets, Flame, Wheat, Bell
+  Shield, Droplets, Flame, Wheat, Bell, Cpu, ArrowRight
 } from 'lucide-react';
 
 // ============ Dashboard Home ============
 function DashboardHome() {
+  const navigate = useNavigate();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResults, setShowResults] = useState(true);
 
@@ -43,6 +46,37 @@ function DashboardHome() {
 
   return (
     <div className="space-y-6">
+      {/* AI Disaster Digital Twin Banner (USP) */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-5 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer group"
+        onClick={() => navigate('/dashboard/digital-twin')}
+        style={{ border: '1px solid rgba(16, 185, 129, 0.4)', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%)' }}
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0 text-emerald-400">
+            <Cpu className="w-6 h-6 animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">
+                CORE USP
+              </span>
+              <h2 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors">
+                AI Disaster Digital Twin Simulation Platform
+              </h2>
+            </div>
+            <p className="text-xs text-gray-300 mt-1">
+              Simulate 3D flood surge vectors, dam overflow scenarios, and test what-if evacuations in real-time.
+            </p>
+          </div>
+        </div>
+
+        <button className="btn-primary py-2 px-4 text-xs font-bold shrink-0 flex items-center gap-1.5">
+          Launch Twin <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </motion.div>
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {quickStats.map((stat, i) => (
@@ -423,6 +457,7 @@ export default function DashboardPage() {
         <main className="flex-1 overflow-y-auto p-6 no-scrollbar">
           <Routes>
             <Route index element={<DashboardHome />} />
+            <Route path="digital-twin" element={<DisasterDigitalTwin />} />
             <Route path="analyze" element={<AnalyzeRegionPage />} />
             <Route path="alerts" element={<AlertsPage />} />
             <Route path="crop-health" element={<CropHealthPage />} />
