@@ -1,3 +1,8 @@
+# 2026_APEX_SIX
+Team APEX SIX | HackPreneur '26 official hackathon repository.
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
