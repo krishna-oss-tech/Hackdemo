@@ -1,12 +1,11 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { features, howItWorksSteps, landingStats } from '../data/mockData';
 import { useTheme } from '../context/ThemeContext';
 import {
   Shield, Zap, ArrowRight, ChevronDown,
   Sun, Moon, Menu, X, Globe, BarChart3, Users, Award,
-  Check, Star, Cpu
+  Check, Star, Activity, Map, Target, Layers
 } from 'lucide-react';
 
 const container = {
@@ -112,85 +111,15 @@ function Navbar() {
 
 function HeroSection() {
   const navigate = useNavigate();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // Particle effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animId: number;
-    const particles: { x: number; y: number; vx: number; vy: number; size: number; opacity: number }[] = [];
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    for (let i = 0; i < 60; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 2 + 0.5,
-        opacity: Math.random() * 0.5 + 0.1,
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(16, 185, 129, ${p.opacity})`;
-        ctx.fill();
-      });
-
-      // Draw connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(16, 185, 129, ${0.08 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-      animId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 graticule-bg">
       {/* Background */}
-      <div className="absolute inset-0">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse at 30% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 60%)'
-          }} />
-      </div>
+      <div className="absolute inset-0 scan-sweep pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 60%)'
+        }} />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
         <motion.div
@@ -205,59 +134,40 @@ function HeroSection() {
             transition={{ delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
             style={{
-              background: 'rgba(16, 185, 129, 0.12)',
-              border: '1px solid rgba(16, 185, 129, 0.3)'
+              background: 'rgba(6, 182, 212, 0.12)',
+              border: '1px solid rgba(6, 182, 212, 0.3)'
             }}
           >
-            <Cpu className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
-              CORE USP • AI DISASTER DIGITAL TWIN PLATFORM
+            <Zap className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
+            <span className="text-xs font-extrabold uppercase tracking-wider" style={{ color: 'var(--color-primary)' }}>
+              TerraAid AI Disaster Intelligence
             </span>
           </motion.div>
 
           {/* Heading */}
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6" style={{ fontFamily: 'Outfit' }}>
-            <span style={{ color: 'var(--text-primary)' }}>Real-Time AI</span>
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6" style={{ fontFamily: 'Space Grotesk' }}>
+            <span style={{ color: 'var(--text-primary)' }}>Detect. Quantify. Explain.</span>
             <br />
-            <span className="text-gradient-primary">Disaster Digital Twin</span>
+            <span className="text-gradient-primary">Prioritize. Act.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed"
+          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-mono-data"
             style={{ color: 'var(--text-secondary)' }}>
-            Simulate flood vectors, model wildfire physics, and test what-if emergency evacuations in real-time. Continuous 3D spatial replicas synchronized with Sentinel-2 satellite streams.
+            Compare before/after satellite imagery to detect floods, wildfires, and crop stress. 
+            Turn planetary telemetry into actionable decision-intelligence for responders on the ground.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <button onClick={() => navigate('/dashboard/digital-twin')}
+            <button onClick={() => navigate('/dashboard/analyze')}
               className="btn-primary text-base py-3.5 px-8 font-bold flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-emerald-400 animate-pulse" /> Launch AI Digital Twin
+              <Activity className="w-5 h-5 text-cyan-200" /> Start Live Analysis
             </button>
-            <button onClick={() => navigate('/dashboard')} className="btn-outline text-base py-3.5 px-8">
-              Explore Live Dashboard <ArrowRight className="w-5 h-5" />
+            <button onClick={() => navigate('/dashboard/analyze?demo=true')} className="btn-outline text-base py-3.5 px-8">
+              View Demo Scenario <ArrowRight className="w-5 h-5" />
             </button>
           </div>
-
-          {/* Stats */}
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto"
-          >
-            {landingStats.map((stat) => (
-              <motion.div key={stat.label} variants={item}
-                className="glass-card p-4 text-center">
-                <div className="text-2xl md:text-3xl font-bold gradient-text mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
         </motion.div>
 
         {/* Scroll indicator */}
@@ -273,128 +183,16 @@ function HeroSection() {
   );
 }
 
-function UspDigitalTwinSection() {
-  const navigate = useNavigate();
 
-  const twinHighlights = [
-    {
-      icon: '🌊',
-      title: '3D Flood Surge Simulation',
-      desc: 'Simulate water elevation profiles across terrain DEM maps when rainfall exceeds 100mm/hr or dam spillways breach.'
-    },
-    {
-      icon: '🔥',
-      title: 'Wildfire Vector Physics',
-      desc: 'Predict heat radiation vectors and wind speed burn paths in forest boundaries up to 48 hours in advance.'
-    },
-    {
-      icon: '🛡️',
-      title: 'What-If Mitigation Testing',
-      desc: 'Test temporary sandbag barriers, reservoir diversions, and zone-based evacuations with instant AI impact recalculation.'
-    },
-    {
-      icon: '🛰️',
-      title: 'Sub-300ms Live Telemetry Sync',
-      desc: 'Directly synchronized with Sentinel-2 SAR radar imagery, IoT water level sensors, and weather forecasts.'
-    }
-  ];
-
-  return (
-    <section className="py-20 relative overflow-hidden border-y" style={{ borderColor: 'rgba(16, 185, 129, 0.2)', background: 'radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 80%)' }}>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
-              style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-              <Cpu className="w-3.5 h-3.5" style={{ color: 'var(--color-primary)' }} />
-              <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">UNMATCHED CORE USP</span>
-            </div>
-
-            <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight" style={{ fontFamily: 'Outfit', color: 'var(--text-primary)' }}>
-              Simulate Catastrophes <br />
-              <span className="text-gradient-primary">Before They Unfold</span>
-            </h2>
-
-            <p className="text-base md:text-lg mb-8 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-              Traditional satellite monitoring only reports after damage occurs. TerraAid's <strong>AI Disaster Digital Twin</strong> creates a dynamic 3D virtual environment to stress-test weather scenarios and test lifesaving interventions in real-time.
-            </p>
-
-            <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              {twinHighlights.map((h, i) => (
-                <div key={i} className="glass-card p-4">
-                  <div className="text-2xl mb-2">{h.icon}</div>
-                  <h4 className="text-sm font-bold mb-1" style={{ color: 'var(--text-primary)' }}>{h.title}</h4>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{h.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <button onClick={() => navigate('/dashboard/digital-twin')} className="btn-primary py-3.5 px-7 font-bold flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-emerald-400 animate-pulse" /> Launch Digital Twin Simulator
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass-card p-6 relative overflow-hidden border border-emerald-500/30"
-          >
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
-                <span className="text-xs font-bold text-emerald-400">LIVE TWIN PHYSICS STREAM</span>
-              </div>
-              <span className="text-[10px] text-gray-400">DEM 30m • Nagpur Hydrology Mesh</span>
-            </div>
-
-            <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
-                <div className="flex justify-between text-xs font-bold mb-2">
-                  <span className="text-gray-300">Simulated Rainfall Surge</span>
-                  <span className="text-blue-400">140 mm/hr</span>
-                </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-blue-500 h-full w-[70%]" />
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
-                <div className="flex justify-between text-xs font-bold mb-2">
-                  <span className="text-gray-300">Dam Spillway Overflow Vector</span>
-                  <span className="text-rose-400">CRITICAL +2.4m</span>
-                </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-rose-500 h-full w-[85%]" />
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-800/60">
-                <div className="flex justify-between text-xs font-bold mb-1 text-emerald-300">
-                  <span>Active What-If Mitigation</span>
-                  <span>50% Surge Drop</span>
-                </div>
-                <p className="text-[11px] text-emerald-400/80">
-                  Kamptee Reservoir Diversion active — 4,200 civilian lives & ₹16.3 Cr crop area protected.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function FeaturesSection() {
+  const featureCards = [
+    { icon: <Shield className="w-8 h-8 text-cyan-400" />, title: 'Disaster Detection', description: 'Spot floods and wildfires instantly using Sentinel-1 SAR and optical imagery.' },
+    { icon: <Map className="w-8 h-8 text-cyan-400" />, title: 'Affected Area', description: 'Quantify exact square kilometers impacted using our precise polygon engine.' },
+    { icon: <Layers className="w-8 h-8 text-cyan-400" />, title: 'Explainable AI', description: 'Never guess why. We provide confidence scores and the exact evidence behind every detection.' },
+    { icon: <Target className="w-8 h-8 text-cyan-400" />, title: 'Priority Response', description: 'Generates zones and actionable recommendations for first responders.' },
+  ];
+
   return (
     <section id="features" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-6">
@@ -406,12 +204,12 @@ function FeaturesSection() {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
-            style={{ background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+            style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
             <Zap className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
             <span className="text-xs font-semibold" style={{ color: 'var(--color-accent)' }}>CAPABILITIES</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Outfit', color: 'var(--text-primary)' }}>
-            Powerful Features
+          <h2 className="text-3xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk', color: 'var(--text-primary)' }}>
+            Actionable Intelligence
           </h2>
           <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
             Everything you need to monitor, detect, and respond to environmental changes from space.
@@ -423,9 +221,9 @@ function FeaturesSection() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {features.map((feature, i) => (
+          {featureCards.map((feature, i) => (
             <motion.div key={i} variants={item}
               className="glass-card p-6 group cursor-pointer"
               whileHover={{ y: -4 }}
@@ -446,10 +244,18 @@ function FeaturesSection() {
 }
 
 function HowItWorksSection() {
+  const steps = [
+    { step: '01', title: 'Detect', desc: 'Continuous satellite monitoring identifies anomalies in SAR and optical data.' },
+    { step: '02', title: 'Quantify', desc: 'AI calculates exact affected area and severity levels automatically.' },
+    { step: '03', title: 'Explain', desc: 'Transparent reporting of the satellite evidence backing the detection.' },
+    { step: '04', title: 'Prioritize', desc: 'Risk zones are mapped to identify where help is needed most.' },
+    { step: '05', title: 'Act', desc: 'Generate actionable response plans for emergency teams.' },
+  ];
+
   return (
-    <section id="how-it-works" className="py-24 relative">
+    <section id="how-it-works" className="py-24 relative border-t border-b" style={{ borderColor: 'var(--border-color)' }}>
       <div className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.04) 0%, transparent 70%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
@@ -464,20 +270,20 @@ function HowItWorksSection() {
             <BarChart3 className="w-3.5 h-3.5" style={{ color: 'var(--color-primary)' }} />
             <span className="text-xs font-semibold" style={{ color: 'var(--color-primary)' }}>WORKFLOW</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Outfit', color: 'var(--text-primary)' }}>
-            How It Works
+          <h2 className="text-3xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk', color: 'var(--text-primary)' }}>
+            The TerraAid Workflow
           </h2>
           <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
-            From satellite scan to actionable intelligence in seconds.
+            From satellite scan to actionable intelligence in 5 straightforward steps.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-4 gap-8 relative">
+        <div className="grid md:grid-cols-5 gap-6 relative">
           {/* Connector line */}
-          <div className="hidden md:block absolute top-16 left-[12%] right-[12%] h-0.5"
+          <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-0.5"
             style={{ background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))' }} />
 
-          {howItWorksSteps.map((step, i) => (
+          {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 40 }}
@@ -486,15 +292,7 @@ function HowItWorksSection() {
               transition={{ delay: i * 0.15, duration: 0.5 }}
               className="text-center relative"
             >
-              <div className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center text-2xl relative z-10"
-                style={{
-                  background: 'var(--bg-card-solid)',
-                  border: '2px solid var(--border-color-light)',
-                  boxShadow: '0 8px 24px var(--shadow-color)'
-                }}>
-                {step.icon}
-              </div>
-              <div className="text-xs font-bold mb-2 tracking-wide"
+              <div className="text-xs font-bold mb-2 tracking-wide font-mono-data"
                 style={{ color: 'var(--color-primary)' }}>
                 STEP {step.step}
               </div>
@@ -502,7 +300,7 @@ function HowItWorksSection() {
                 {step.title}
               </h3>
               <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {step.description}
+                {step.desc}
               </p>
             </motion.div>
           ))}
@@ -535,7 +333,7 @@ function WhyTerraAidSection() {
               <Star className="w-3.5 h-3.5" style={{ color: 'var(--color-primary)' }} />
               <span className="text-xs font-semibold" style={{ color: 'var(--color-primary)' }}>WHY CHOOSE US</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-6" style={{ fontFamily: 'Outfit', color: 'var(--text-primary)' }}>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6" style={{ fontFamily: 'Space Grotesk', color: 'var(--text-primary)' }}>
               Why TerraAid AI?
             </h2>
             <p className="text-lg mb-8 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
@@ -693,7 +491,6 @@ export default function LandingPage() {
     <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <Navbar />
       <HeroSection />
-      <UspDigitalTwinSection />
       <FeaturesSection />
       <HowItWorksSection />
       <WhyTerraAidSection />

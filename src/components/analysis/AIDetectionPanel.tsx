@@ -1,26 +1,32 @@
 import { motion } from 'framer-motion';
-import type { Detection } from '../../data/mockData';
+import { useAnalysisStore } from '../../stores/analysisStore';
+import DemoBadge from '../ui/DemoBadge';
 import {
   Droplets, Flame, Wheat, TreePine,
   MapPin, Calendar, Target, AlertTriangle, TrendingUp
 } from 'lucide-react';
 
-const typeConfig = {
+const typeConfig: Record<string, any> = {
   flood: { icon: <Droplets className="w-5 h-5" />, badge: 'badge-flood', label: 'Flood Detected', gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
-  fire: { icon: <Flame className="w-5 h-5" />, badge: 'badge-fire', label: 'Fire Detected', gradient: 'linear-gradient(135deg, #ef4444, #b91c1c)' },
+  wildfire: { icon: <Flame className="w-5 h-5" />, badge: 'badge-fire', label: 'Fire Detected', gradient: 'linear-gradient(135deg, #ef4444, #b91c1c)' },
   crop_stress: { icon: <Wheat className="w-5 h-5" />, badge: 'badge-crop-stress', label: 'Crop Stress', gradient: 'linear-gradient(135deg, #eab308, #a16207)' },
   healthy: { icon: <TreePine className="w-5 h-5" />, badge: 'badge-healthy', label: 'Healthy Area', gradient: 'linear-gradient(135deg, #22c55e, #15803d)' },
 };
 
-const severityColors = {
+const severityColors: Record<string, string> = {
   Critical: '#ef4444',
   High: '#f97316',
   Medium: '#eab308',
   Low: '#22c55e',
 };
 
-export default function AIDetectionPanel({ detection }: { detection: Detection }) {
-  const config = typeConfig[detection.type];
+export default function AIDetectionPanel() {
+  const store = useAnalysisStore();
+  const detection = store.result;
+
+  if (!detection) return null;
+
+  const config = typeConfig[detection.disaster_type] || typeConfig.healthy;
 
   return (
     <motion.div
@@ -36,12 +42,15 @@ export default function AIDetectionPanel({ detection }: { detection: Detection }
           {config.icon}
         </div>
         <div>
-          <h3 className="text-white font-bold text-base">{config.label}</h3>
-          <p className="text-white/70 text-xs">{detection.location}</p>
+          <h3 className="text-white font-bold text-base flex items-center gap-2">
+            {config.label}
+            {store.isDemo && <DemoBadge />}
+          </h3>
+          <p className="text-white/70 text-xs">{detection.location_name}</p>
         </div>
         <div className="ml-auto">
           <span className={`badge ${config.badge}`}>
-            {detection.type.replace('_', ' ')}
+            {detection.disaster_type.replace('_', ' ')}
           </span>
         </div>
       </div>
@@ -78,7 +87,7 @@ export default function AIDetectionPanel({ detection }: { detection: Detection }
               <span className="text-[10px] font-medium" style={{ color: 'var(--text-tertiary)' }}>AFFECTED AREA</span>
             </div>
             <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
-              {detection.affectedArea} <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>{detection.affectedAreaUnit}</span>
+              {detection.affected_area_km2} <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>km²</span>
             </span>
           </div>
           <div className="p-3 rounded-xl" style={{ background: 'var(--bg-hover)' }}>
@@ -88,8 +97,8 @@ export default function AIDetectionPanel({ detection }: { detection: Detection }
             </div>
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full animate-pulse"
-                style={{ background: severityColors[detection.severity] }} />
-              <span className="text-lg font-bold" style={{ color: severityColors[detection.severity] }}>
+                style={{ background: severityColors[detection.severity] || severityColors.High }} />
+              <span className="text-lg font-bold" style={{ color: severityColors[detection.severity] || severityColors.High }}>
                 {detection.severity}
               </span>
             </div>
@@ -100,17 +109,17 @@ export default function AIDetectionPanel({ detection }: { detection: Detection }
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
             <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
-            {detection.location}
+            {detection.location_name} ({detection.latitude.toFixed(4)}, {detection.longitude.toFixed(4)})
           </div>
           <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
             <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
-            {detection.date}
+            {detection.before_date} to {detection.after_date}
           </div>
         </div>
 
         {/* Description */}
         <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-          {detection.description}
+          {detection.severity_reason}
         </p>
       </div>
     </motion.div>

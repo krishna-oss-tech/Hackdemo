@@ -131,18 +131,17 @@ export default function BeforeAfterSlider() {
           )}
         </div>
 
-        {/* Before Imagery (Clipped via Slider Position) */}
+        {/* Before Imagery (Clipped via clip-path for reliable responsive sizing) */}
         <div
-          className="absolute inset-0 overflow-hidden border-r-2 border-white shadow-2xl"
-          style={{ width: `${sliderPos}%` }}
+          className="absolute inset-0 border-r-2 border-white shadow-2xl pointer-events-none"
+          style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}
         >
           <img
             src={satelliteBefore}
             alt="Pre disaster satellite"
-            className={`absolute inset-0 w-full h-full object-cover max-w-none transition-all ${
+            className={`w-full h-full object-cover transition-all ${
               sensorMode === 'sentinel1' ? 'grayscale contrast-200' : sensorMode === 'landsat' ? 'hue-rotate-90' : ''
             }`}
-            style={{ width: `${containerRef.current ? containerRef.current.offsetWidth : 100}px` }}
             draggable={false}
           />
         </div>
@@ -159,7 +158,7 @@ export default function BeforeAfterSlider() {
         </div>
 
         {/* Date Overlay Badges */}
-        <div className="absolute top-3 left-3 z-10 px-3 py-1.5 rounded-lg text-xs font-extrabold text-emerald-300 bg-slate-950/80 border border-emerald-500/30 backdrop-blur-md">
+        <div className="absolute top-3 left-3 z-10 px-3 py-1.5 rounded-lg text-xs font-extrabold text-cyan-300 bg-slate-950/80 border border-cyan-500/30 backdrop-blur-md">
           BEFORE • {beforeDate}
         </div>
         <div className="absolute top-3 right-3 z-10 px-3 py-1.5 rounded-lg text-xs font-extrabold text-rose-300 bg-slate-950/80 border border-rose-500/30 backdrop-blur-md">

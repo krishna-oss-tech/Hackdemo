@@ -14,6 +14,7 @@ import AlertCard from '../components/alerts/AlertCard';
 import StatsCharts from '../components/stats/StatsCharts';
 import ReportGenerator from '../components/reports/ReportGenerator';
 import DisasterDigitalTwin from '../components/digitaltwin/DisasterDigitalTwin';
+import AnalyzeRegionPage from './AnalyzeRegionPage';
 import { detections, alerts } from '../data/mockData';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -150,72 +151,6 @@ function DashboardHome() {
   );
 }
 
-// ============ Analyze Region Page ============
-function AnalyzeRegionPage() {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [showResults, setShowResults] = useState(false);
-
-  const handleAnalyze = () => {
-    setShowResults(false);
-    setIsAnalyzing(true);
-    setTimeout(() => {
-      setIsAnalyzing(false);
-      setShowResults(true);
-    }, 3000);
-  };
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)', fontFamily: 'Outfit' }}>
-            Analyze Region
-          </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-            Select a region on the map to analyze satellite imagery
-          </p>
-        </div>
-        <button onClick={handleAnalyze} className="btn-primary">
-          <Satellite className="w-4 h-4" /> Start Analysis
-        </button>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <MapView onRegionSelect={handleAnalyze} isAnalyzing={isAnalyzing} />
-        </div>
-        <div className="space-y-6">
-          {showResults ? (
-            <>
-              <AIDetectionPanel detection={detections[0]} />
-              <AIDetectionPanel detection={detections[1]} />
-            </>
-          ) : (
-            <div className="glass-card p-8 text-center">
-              <Satellite className="w-12 h-12 mx-auto mb-4 animate-float" style={{ color: 'var(--color-primary)' }} />
-              <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                Ready to Analyze
-              </h3>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                Draw an area on the map or click "Start Analysis" to process satellite imagery.
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {showResults && (
-        <>
-          <div className="grid lg:grid-cols-2 gap-6">
-            <BeforeAfterSlider />
-            <AIExplainability />
-          </div>
-          <AIRecommendations />
-        </>
-      )}
-    </div>
-  );
-}
 
 // ============ Alerts Page ============
 function AlertsPage() {
